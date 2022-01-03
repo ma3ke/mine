@@ -385,29 +385,6 @@ impl Field {
     }
 }
 
-// TODO: Move this to cell.rs?
-pub enum CellState {
-    Flagged,
-    RevealedMine,
-    Neighbours(usize),
-    Hidden,
-}
-
-impl Cell {
-    pub fn cell_state(&self) -> CellState {
-        if self.is_flagged() {
-            CellState::Flagged
-        } else if self.is_revealed() {
-            if self.is_mine() {
-                CellState::RevealedMine
-            } else {
-                CellState::Neighbours(self.neighbours())
-            }
-        } else {
-            CellState::Hidden
-        }
-    }
-}
 
 // TODO: Move to some game.rs?
 pub enum GameState {

@@ -69,6 +69,29 @@ impl Cell {
     }
 }
 
+pub enum CellState {
+    Flagged,
+    RevealedMine,
+    Neighbours(usize),
+    Hidden,
+}
+
+impl Cell {
+    pub fn cell_state(&self) -> CellState {
+        if self.is_flagged() {
+            CellState::Flagged
+        } else if self.is_revealed() {
+            if self.is_mine() {
+                CellState::RevealedMine
+            } else {
+                CellState::Neighbours(self.neighbours())
+            }
+        } else {
+            CellState::Hidden
+        }
+    }
+}
+
 impl fmt::Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         /***
