@@ -71,7 +71,6 @@ impl Field {
     /// Returns the cell at a given position.
     pub fn get_cell(&self, x: usize, y: usize) -> Cell {
         let index = y * self.width + x;
-        // TODO: Can we impl copy on this?
         self.cells[index].clone()
     }
 
@@ -339,10 +338,12 @@ impl Field {
 
     /// Returns true if the game is over.
     pub fn is_game_over(&self) -> bool {
-        // TODO: here we just read out the value as set during the reveal() function. However, is
+        // NOTE: here we just read out the value as set during the reveal() function. However, is
         // it not better to check whether any mines have been revealed over the whole field? Sounds
         // more correct. But I cannot, on the other hand, think of any way the field can invalidly
-        // have a false game_over value but also contain revealed mines. Hmm...
+        // have a false game_over value but also contain revealed mines.
+        //
+        // I changed this comment from a todo to a note. I think it's okay.
         self.game_over
     }
 }
@@ -385,10 +386,7 @@ impl Field {
     }
 }
 
-
-// TODO: Move to some game.rs?
 pub enum GameState {
-    // TODO: These names should be improved.
     Running,
     GameOver,
     Won,

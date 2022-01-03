@@ -41,12 +41,9 @@ fn main() -> Result<(), std::io::Error> {
 
     let mut previous_input = Key::Unknown;
 
-    // gameloop
-    //TODO: Why did I need this 'gameloop label again?
     'gameloop: loop {
         let input = term.read_key()?;
 
-        // TODO: Let's just use characters, now, not this integer mess.
         match input {
             // Basic movement
             Key::Char('h') | Key::ArrowLeft => {
