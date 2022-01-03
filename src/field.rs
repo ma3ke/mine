@@ -4,12 +4,20 @@ use std::collections::HashMap;
 use std::fmt;
 
 /// The _Field_ class represents the play field made up of cells.
+#[derive(Clone, PartialEq, Eq)]
 pub struct Field {
     height: usize,
     width: usize,
     game_over: bool, // default = false
     cells: Vec<Cell>,
     cursor_pos: (usize, usize), // default = (x: 0, y: 0)
+}
+
+pub enum Edge {
+    Left,
+    Right,
+    Up,
+    Down,
 }
 
 impl Field {
@@ -49,6 +57,17 @@ impl Field {
         self.cells.iter().filter(|c| c.is_flagged()).count()
     }
 
+    /// Returns the total number of mines in the field.
+    pub fn total_mines(&self) -> usize {
+        self.cells.iter().filter(|c| c.is_mine()).count()
+    }
+
+    /// Returns the number of mines in the field subtracted by the number of flags placed.
+    pub fn mines_left(&self) -> isize {
+        let mines = self.total_mines();
+        (mines as isize) - (self.total_flags() as isize)
+    }
+
     /// Returns the cell at a given position.
     pub fn get_cell(&self, x: usize, y: usize) -> Cell {
         let index = y * self.width + x;
@@ -56,8 +75,16 @@ impl Field {
         self.cells[index].clone()
     }
 
-    pub fn cells_mut(&mut self) -> &mut Vec<Cell> {
+    pub fn cells(&self) -> &Vec<Cell> {
+        &self.cells
+    }
+
+    fn cells_mut(&mut self) -> &mut Vec<Cell> {
         &mut self.cells
+    }
+
+    pub fn width(&self) -> usize {
+        self.width
     }
 
     /// Returns y value of the cursor position in the field.
@@ -358,6 +385,50 @@ impl Field {
     }
 }
 
+// TODO: Move this to cell.rs?
+pub enum CellState {
+    Flagged,
+    RevealedMine,
+    Neighbours(usize),
+    Hidden,
+}
+
+impl Cell {
+    pub fn cell_state(&self) -> CellState {
+        if self.is_flagged() {
+            CellState::Flagged
+        } else if self.is_revealed() {
+            if self.is_mine() {
+                CellState::RevealedMine
+            } else {
+                CellState::Neighbours(self.neighbours())
+            }
+        } else {
+            CellState::Hidden
+        }
+    }
+}
+
+// TODO: Move to some game.rs?
+pub enum GameState {
+    // TODO: These names should be improved.
+    Running,
+    GameOver,
+    Won,
+}
+
+impl Field {
+    pub fn game_state(&self) -> GameState {
+        if self.is_game_over() {
+            GameState::GameOver
+        } else if self.has_won() {
+            GameState::Won
+        } else {
+            GameState::Running
+        }
+    }
+}
+
 impl fmt::Display for Field {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         /***
@@ -400,11 +471,4 @@ impl fmt::Display for Field {
 
         write!(f, "{}", rows.join("\n"))
     }
-}
-
-pub enum Edge {
-    Left,
-    Right,
-    Up,
-    Down,
 }

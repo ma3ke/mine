@@ -3,7 +3,7 @@ use std::fmt;
 
 /// This struct represents the _Cell_ type. There are several variables
 /// representing the cell's state.
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Cell {
     /// These values are populated in the field struct.
     mine: bool, // default = false

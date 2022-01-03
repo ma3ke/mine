@@ -1,4 +1,4 @@
-use crate::field::{Action, Field};
+use crate::field::{Action, Field, GameState};
 use console::{style, Key, Term};
 use std::io::Write;
 use structopt::StructOpt;
@@ -115,37 +115,41 @@ fn main() -> Result<(), std::io::Error> {
 
         term.clear_screen()?;
 
-        if f.has_won() {
-            // Win screen
-            f.reveal_all();
-            println!("{}", style("YOU WON!!!").color256(178).bold());
-            term.write_fmt(format_args!("{}\n", f))?;
-            println!("{}", style("press any key to exit").italic());
-            let _ = term.read_char(); // get any key
-            term.clear_screen()?;
-            break 'gameloop;
-        } else if f.is_game_over() {
-            // Game over screen
-            f.reveal_all();
-            println!("{}", style("GAME OVER").color256(75).bold());
-            term.write_fmt(format_args!("{}\n", f))?;
-            println!("{}", style("press any key to exit").italic());
-            let _ = term.read_char(); // get any key
-            term.clear_screen()?;
-            break 'gameloop;
-        } else {
-            // The game is not over, neither has it been won. Show the number of mines left, and
-            // the total number of flags. Continue the game.
-            println!(
-                "{}",
-                style(format!(
-                    "{} out of {} mines left",
-                    mines as isize - f.total_flags() as isize,
-                    mines
-                ))
-                .color256(238)
-            );
-            term.write_fmt(format_args!("{}", f))?;
+        match f.game_state() {
+            GameState::Won => {
+                // Win screen
+                f.reveal_all();
+                println!("{}", style("YOU WON!!!").color256(178).bold());
+                term.write_fmt(format_args!("{}\n", f))?;
+                println!("{}", style("press any key to exit").italic());
+                let _ = term.read_char(); // get any key
+                term.clear_screen()?;
+                break 'gameloop;
+            }
+            GameState::GameOver => {
+                // Game over screen
+                f.reveal_all();
+                println!("{}", style("GAME OVER").color256(75).bold());
+                term.write_fmt(format_args!("{}\n", f))?;
+                println!("{}", style("press any key to exit").italic());
+                let _ = term.read_char(); // get any key
+                term.clear_screen()?;
+                break 'gameloop;
+            }
+            GameState::Running => {
+                // The game is not over, neither has it been won. Show the number of mines left, and
+                // the total number of flags. Continue the game.
+                println!(
+                    "{}",
+                    style(format!(
+                        "{} out of {} mines left",
+                        mines as isize - f.total_flags() as isize,
+                        mines
+                    ))
+                    .color256(238)
+                );
+                term.write_fmt(format_args!("{}", f))?;
+            }
         }
 
         previous_input = input;
