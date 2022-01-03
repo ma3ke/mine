@@ -26,15 +26,15 @@ pub struct Tui {
 pub struct Gui {
     /// Field width.
     #[structopt(short, long, default_value = "9")]
-    width: usize,
+    width: u32,
 
     /// Field height.
     #[structopt(short, long, default_value = "9")]
-    height: usize,
+    height: u32,
 
     /// The number of mines to be placed in the field.
     #[structopt(short, long, default_value = "10")]
-    mines: usize,
+    mines: u32,
 }
 
 /// Mine: a minesweeper game for the terminal and gui.
