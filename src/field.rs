@@ -320,6 +320,44 @@ impl Field {
     }
 }
 
+pub enum Action {
+    CursorUp,
+    CursorDown,
+    CursorLeft,
+    CursorRight,
+
+    CursorToEdgeUp,
+    CursorToEdgeDown,
+    CursorToEdgeLeft,
+    CursorToEdgeRight,
+
+    Flag,
+    Reveal,
+    RevealAround,
+}
+
+impl Field {
+    pub fn apply_action(&mut self, action: Action) {
+        match action {
+            Action::CursorUp => self.translate_y(-1),
+            Action::CursorDown => self.translate_y(1),
+            Action::CursorLeft => self.translate_x(-1),
+            Action::CursorRight => self.translate_x(1),
+
+            Action::CursorToEdgeUp => self.move_cursor_to_edge(Edge::Up),
+            Action::CursorToEdgeDown => self.move_cursor_to_edge(Edge::Down),
+            Action::CursorToEdgeLeft => self.move_cursor_to_edge(Edge::Left),
+            Action::CursorToEdgeRight => self.move_cursor_to_edge(Edge::Right),
+
+            Action::Flag => self.flag(self.cursor_pos_x(), self.cursor_pos_y()),
+            Action::Reveal => {
+                self.reveal(self.cursor_pos_x(), self.cursor_pos_y());
+            }
+            Action::RevealAround => self.reveal_from_cell(self.cursor_pos_x(), self.cursor_pos_y()),
+        }
+    }
+}
+
 impl fmt::Display for Field {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         /***

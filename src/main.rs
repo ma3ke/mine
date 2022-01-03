@@ -1,4 +1,4 @@
-use crate::field::{Edge, Field};
+use crate::field::{Action, Field};
 use console::{style, Key, Term};
 use std::io::Write;
 use structopt::StructOpt;
@@ -51,55 +51,55 @@ fn main() -> Result<(), std::io::Error> {
             // Basic movement
             Key::Char('h') | Key::ArrowLeft => {
                 // h — <
-                f.translate_x(-1)
+                f.apply_action(Action::CursorLeft)
             }
             Key::Char('j') | Key::ArrowDown => {
                 // j — v
-                f.translate_y(1)
+                f.apply_action(Action::CursorDown)
             }
             Key::Char('k') | Key::ArrowUp => {
                 // k — ^
-                f.translate_y(-1)
+                f.apply_action(Action::CursorUp)
             }
             Key::Char('l') | Key::ArrowRight => {
                 // l — >
-                f.translate_x(1)
+                f.apply_action(Action::CursorRight)
             }
 
             // Movements to edges
             Key::Char('H') | Key::Char('0') => {
                 // H — <<
-                f.move_cursor_to_edge(Edge::Left)
+                f.apply_action(Action::CursorToEdgeLeft)
             }
             Key::Char('L') | Key::Char('$') => {
                 // L — >>
-                f.move_cursor_to_edge(Edge::Right)
+                f.apply_action(Action::CursorToEdgeRight)
             }
             Key::Char('G') => {
                 // G — vv
-                f.move_cursor_to_edge(Edge::Down)
+                f.apply_action(Action::CursorToEdgeDown)
             }
             Key::Char('g') => {
                 // g — ^^
-                f.move_cursor_to_edge(Edge::Up)
+                f.apply_action(Action::CursorToEdgeUp)
             }
 
             // Flag selected cell
             Key::Char('f') | Key::Char(' ') => {
                 // f — SPACE
-                f.flag(f.cursor_pos_x(), f.cursor_pos_y())
+                f.apply_action(Action::Flag)
             }
 
             // Reveal selected cell
             Key::Char('r') | Key::Enter | Key::Tab => {
                 // r — RETURN — TAB
-                f.reveal(f.cursor_pos_x(), f.cursor_pos_y());
+                f.apply_action(Action::Reveal);
 
                 // If the previous input and the current input are the same, when the cell is
                 // attempted to be revealed, this is considered a double press. In that case, the
                 // neighbouring cells are to be revealed too, when possible.
                 if previous_input == input {
-                    f.reveal_from_cell(f.cursor_pos_x(), f.cursor_pos_y())
+                    f.apply_action(Action::RevealAround);
                 }
             }
 
