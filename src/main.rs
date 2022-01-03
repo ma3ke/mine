@@ -6,9 +6,9 @@ use structopt::StructOpt;
 mod cell;
 mod field;
 
-/// _Mine_ by Koen Westendorp
+/// Terminal interface for Mine
 #[derive(StructOpt)]
-struct Opt {
+struct Tui {
     /// Field width.
     #[structopt(short, long, default_value = "9")]
     width: usize,
@@ -22,9 +22,46 @@ struct Opt {
     mines: usize,
 }
 
+/// Graphical interface for Mine
+#[derive(StructOpt)]
+struct Gui {
+    /// Field width.
+    #[structopt(short, long, default_value = "9")]
+    width: usize,
+
+    /// Field height.
+    #[structopt(short, long, default_value = "9")]
+    height: usize,
+
+    /// The number of mines to be placed in the field.
+    #[structopt(short, long, default_value = "10")]
+    mines: usize,
+}
+
+/// Mine: a minesweeper game for the terminal and gui.
+#[derive(StructOpt)]
+enum Command {
+    Tui(Tui),
+    Gui(Gui),
+}
+
+#[derive(StructOpt)]
+#[structopt(name = "Mine", author = "Koen Westendorp")]
+struct Opt {
+    #[structopt(subcommand)]
+    command: Command,
+}
+
 fn main() -> Result<(), std::io::Error> {
     let opt = Opt::from_args();
 
+    match opt.command {
+        Command::Tui(opt) => tui(opt),
+        Command::Gui(opt) => gui(opt),
+    }
+}
+
+fn tui(opt: Tui) -> Result<(), std::io::Error> {
     // Initialize some sensible default values.
     let width = opt.width;
     let height = opt.height;
@@ -157,4 +194,8 @@ fn main() -> Result<(), std::io::Error> {
     print!("\u{1b}[?1049l");
 
     Ok(())
+}
+
+fn gui(opt: Gui) -> Result<(), std::io::Error> {
+    todo!()
 }
