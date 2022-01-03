@@ -262,14 +262,6 @@ impl Field {
         let new_x = self.cursor_pos.0 as isize + x;
         let new_y = self.cursor_pos.1 as isize + y;
 
-        /***
-        if 0 > new_x || new_x >= self.width as isize {
-            return false;
-        } else if 0 > new_y || new_y >= self.height as isize {
-            return false;
-        }
-        ***/
-
         let not_within_width = 0 > new_x || new_x >= self.width as isize;
         let not_within_height = 0 > new_y || new_y >= self.height as isize;
 
