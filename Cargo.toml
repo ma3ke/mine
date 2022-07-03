@@ -1,15 +1,20 @@
 [package]
 name = "mine-rs"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Koen Westendorp <koensswestendorp@icloud.com>"]
 edition = "2021"
 
 #[profile.release]
 #debug = true
 
+[features]
+default = ["tui"]
+gui = ["dep:winit", "dep:pixels"]
+tui = ["dep:console"]
+
 [dependencies]
 rand = "0.8"
-console = "0.15"
 structopt = "0.3"
-winit = "0.26"
-pixels = "0.8"
+console = { version = "0.15", optional = true }
+winit = { version = "0.26", optional = true }
+pixels = { version = "0.8" , optional = true }

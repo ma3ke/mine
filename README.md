@@ -18,6 +18,14 @@ cd mine
 cargo install --path .
 ```
 
+### Features
+
+By default, the `tui` feature is enabled. The `gui` feature can be enabled by using 
+
+```zsh
+cargo install --features=gui --path .
+```
+
 ## Usage
 
 ```zsh

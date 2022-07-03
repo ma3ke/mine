@@ -1,4 +1,8 @@
-use crate::mode::{gui::gui, tui::tui};
+#[cfg(feature = "gui")]
+use crate::mode::gui::gui;
+#[cfg(feature = "tui")]
+use crate::mode::tui::tui;
+
 use structopt::StructOpt;
 
 mod cell;
@@ -6,6 +10,7 @@ mod field;
 mod mode;
 
 /// Terminal interface for Mine
+#[cfg(feature = "tui")]
 #[derive(StructOpt)]
 pub struct Tui {
     /// Field width.
@@ -22,6 +27,7 @@ pub struct Tui {
 }
 
 /// Graphical interface for Mine
+#[cfg(feature = "gui")]
 #[derive(StructOpt)]
 pub struct Gui {
     /// Field width.
@@ -40,7 +46,9 @@ pub struct Gui {
 /// Mine: a minesweeper game for the terminal and gui.
 #[derive(StructOpt)]
 enum Command {
+    #[cfg(feature = "tui")]
     Tui(Tui),
+    #[cfg(feature = "gui")]
     Gui(Gui),
 }
 
@@ -55,7 +63,9 @@ fn main() -> Result<(), std::io::Error> {
     let opt = Opt::from_args();
 
     match opt.command {
+        #[cfg(feature = "tui")]
         Command::Tui(opt) => tui(opt),
+        #[cfg(feature = "gui")]
         Command::Gui(opt) => gui(opt),
     }
 }
