@@ -643,8 +643,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "mine-rs"
-version = "0.1.0"
+name = "mine"
+version = "0.2.1"
 dependencies = [
  "console",
  "pixels",

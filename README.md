@@ -29,7 +29,7 @@ cargo install --features=gui --path .
 ## Usage
 
 ```zsh
-mine-rs <SUBCOMMAND>
+mine <SUBCOMMAND>
 ```
 
 ### Subcommands
